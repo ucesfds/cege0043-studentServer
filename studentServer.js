@@ -21,8 +21,7 @@ var fs = require('fs');
 var pg = require('pg');
 var configtext =
 ""+fs.readFileSync("/home/studentuser/certs/postGISConnection.js");
-// now convert the configruation file into the correct format -i.e. a name/value
-pair array
+// now convert the configruation file into the correct format -i.e. a name/value pair array
 var configarray = configtext.split(",");
 var config = {};
 for (var i = 0; i < configarray.length; i++) {
