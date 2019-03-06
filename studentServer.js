@@ -48,6 +48,24 @@ app.get('/postgistest', function (req,res) {
 	});
 });
 
+// simple app.get to test the rows of london_poi
+app.get('/london_poi_test', function (req,res) {
+	pool.connect(function(err,client,done) {
+		if(err){
+			console.log("not able to get connection "+ err);
+			res.status(400).send(err);
+		}
+		client.query('SELECT * FROM london_poi limit 1' ,function(err,result) {
+			done();
+			if(err){
+				console.log(err);
+				res.status(400).send(err);
+			}
+			res.status(200).send(result.rows);
+		});
+	});
+});
+
 //  this function is using fixed table name, column name and columns (name, surname and port_id)
 app.get('/getFormData/:port_id', function (req,res) {
 pool.connect(function(err,client,done) {
