@@ -95,6 +95,7 @@ res.status(200).send(result.rows);
 });
 });
 
+
 // generate GeoJSON from any spatial table
 app.get('/getGeoJSON/:tablename/:geomcolumn/:portNumber?', function (req,res) {
 pool.connect(function(err,client,done) {
@@ -104,8 +105,7 @@ res.status(400).send(err);
 }
 var colnames = "";
 // first get a list of the columns that are in the table
-// use string_agg to generate a comma separated list that can then be
-pasted into the next query
+// use string_agg to generate a comma separated list that can then be pasted into the next query
 var tablename = req.params.tablename;
 var geomcolumn = req.params.geomcolumn;
 var querystring = "select string_agg(colname,',') from ( select column_name as colname ";
@@ -125,12 +125,9 @@ thecolnames = result.rows[0].string_agg;
 colnames = thecolnames;
 console.log("the colnames "+thecolnames);
 // now use the inbuilt geoJSON functionality
-// and create the required geoJSON format using a query adapted from
-here:
-// http://www.postgresonline.com/journal/archives/267-CreatingGeoJSON-Feature-Collections-with-JSON-and-PostGIS-functions.html, accessed 4th
-January 2018
-// note that query needs to be a single string with no line breaks so
-built it up bit by bit
+// and create the required geoJSON format using a query adapted from here:
+// http://www.postgresonline.com/journal/archives/267-CreatingGeoJSON-Feature-Collections-with-JSON-and-PostGIS-functions.html, accessed 4th January 2018
+// note that query needs to be a single string with no line breaks so built it up bit by bit
 var querystring = " SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ";
 querystring = querystring + "(SELECT 'Feature' As type , ST_AsGeoJSON(lg." + req.params.geomcolumn+")::json As geometry, ";
 querystring = querystring + "row_to_json((SELECT l FROM (SELECT "+colnames + ") As l )) As properties";
@@ -155,8 +152,6 @@ res.status(200).send(result.rows);
 });
 });
 });
-
-
 // code to actually do the POST request to studentServer.js
 app.post('/uploadData',function(req,res){
 // note that we are using POST here as we are uploading data
